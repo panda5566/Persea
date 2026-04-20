@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TERMINAL: PROJECT M-2026</title>
-    <style>
+	<style>
         :root {
             --bg: #F4F1EA; /* 經典米色背景 */
             --navy: #2C3E50; /* 深藍色 */
@@ -31,6 +31,7 @@
             background: #fff;
             box-shadow: 10px 10px 0px var(--navy);
             text-align: center;
+            box-sizing: border-box;
         }
 
         .scene { display: none; }
@@ -38,7 +39,9 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .input-group { margin: 20px 0; }
-        input {
+
+        /* 修改這裏：精確指定文字與數字輸入框的寬度 */
+        input[type="text"], input[type="number"] {
             background: #f9f9f9;
             border: 1px solid var(--navy);
             padding: 12px;
@@ -46,6 +49,7 @@
             font-size: 1rem;
             text-align: center;
             color: var(--navy);
+            box-sizing: border-box;
         }
 
         button {
@@ -82,15 +86,19 @@
             transform: scale(0.9);
         }
 
-        /* 第三關：大型進度滑桿 */
+        /* 第三關：大型進度滑桿容器 */
         .slider-container {
-            margin: 40px 0;
-            position: relative;
+            margin: 40px auto; /* 增加上下間距並置中 */
+            width: 100%;
+            max-width: 350px;  /* 限制最大寬度讓拉桿不會拉太長 */
         }
 
+        /* 修改這裏：確保滑桿寬度 100% 且置中 */
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
+            display: block;    /* 確保其為區塊元素 */
+            margin: 0 auto;    /* 左右自動置中 */
             background: #eee;
             height: 15px;
             border-radius: 10px;
