@@ -37,7 +37,6 @@
         .scene.active { display: block; animation: fadeIn 0.6s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 輸入框與按鈕 */
         .input-group { margin: 20px 0; }
         input {
             background: #f9f9f9;
@@ -58,6 +57,29 @@
             cursor: pointer;
             margin-top: 10px;
             letter-spacing: 1px;
+        }
+
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* 新關卡：組件選取樣式 */
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .comp-item {
+            font-size: 2rem;
+            padding: 15px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 5px;
+        }
+        .comp-item.selected {
+            background-color: var(--accent);
+            border-color: var(--navy);
+            transform: scale(0.9);
         }
 
         /* 第三關：大型進度滑桿 */
@@ -101,38 +123,27 @@
             border-left: 4px solid var(--accent);
         }
 
-		/* 照片容器樣式：模擬拍立得質感 */
-		.photo-card {
-			background: white;
-			padding: 15px 15px 40px 15px; /* 下方留白較多，像拍立得 */
-			border: 1px solid #ddd;
-			box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-			margin: 20px auto;
-			max-width: 280px; /* 限制照片大小，適合手機觀看 */
-			transform: rotate(-3deg); /* 微微傾斜更自然 */
-			transition: transform 0.5s ease;
-		}
+        .photo-card {
+            background: white;
+            padding: 15px 15px 40px 15px;
+            border: 1px solid #ddd;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            margin: 20px auto;
+            max-width: 280px;
+            transform: rotate(-3deg);
+            transition: transform 0.5s ease;
+        }
 
-		/* 當滑鼠移上去或手機點擊時會擺正，增加互動感 */
-		.photo-card:hover {
-			transform: rotate(0deg);
-		}
+        .photo-card:hover { transform: rotate(0deg); }
+        .photo-card img { width: 100%; height: auto; display: block; filter: sepia(10%); }
 
-		.photo-card img {
-			width: 100%;
-			height: auto;
-			display: block;
-			filter: sepia(20%); /* 稍微加一點復古濾鏡，配合超音波顏色 */
-		}
-
-		/* 這是你原本那行文字的升級版樣式 */
-		.announcement-text {
-			font-weight: bold;
-			font-size: 1.5rem; /* 字體放大一點 */
-			color: #D35400;   /* 溫暖的深橘色 */
-			margin-top: 25px;
-			letter-spacing: 2px;
-		}
+        .announcement-text {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #D35400;
+            margin-top: 25px;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 <body>
@@ -141,9 +152,9 @@
     <div id="stage1" class="scene active">
         <p style="font-size: 0.8rem; opacity: 0.7;">> SYSTEM ID: ADMIN_TAIWAN</p>
         <h2>指令驗證</h2>
-        <p>請輸入專案啟動碼：Ming & Lulu</p>
+        <p>請輸入專案啟動碼：Persea</p>
         <div class="input-group">
-            <input type="text" id="cmdInput" placeholder="Ming & Lulu">
+            <input type="text" id="cmdInput" placeholder="Persea">
         </div>
         <button onclick="checkStage1()">執行指令</button>
     </div>
@@ -158,6 +169,21 @@
     </div>
 
     <div id="stage3" class="scene">
+        <h2>核心組件選取</h2>
+        <p>請選取 3 個符合「新計畫」的關鍵組件：</p>
+        <div class="component-grid">
+            <div class="comp-item" onclick="toggleComp(this)">🍼</div>
+            <div class="comp-item" onclick="toggleComp(this)">🔧</div>
+            <div class="comp-item" onclick="toggleComp(this)">🧸</div>
+            <div class="comp-item" onclick="toggleComp(this)">🥣</div>
+            <div class="comp-item" onclick="toggleComp(this)">💖</div>
+            <div class="comp-item" onclick="toggleComp(this)">🛏️</div>
+        </div>
+        <p id="comp-msg" style="font-size: 0.85rem; color: #666;">等待配對中...</p>
+        <button id="next3Btn" disabled onclick="nextStage(4)">解鎖系統</button>
+    </div>
+
+    <div id="stage4" class="scene">
         <h2>專案加載中...</h2>
         <p>請將滑桿拉至 100% 以部署專案</p>
         <div class="slider-container">
@@ -165,28 +191,24 @@
             <div id="loading-text">進度：0%</div>
         </div>
         <div id="status-msg" style="font-size: 0.85rem; color: #666;">系統就緒中...</div>
-        <button id="finalBtn" style="display:none;" onclick="nextStage(4)">完成部署</button>
+        <button id="finalBtn" style="display:none;" onclick="nextStage(5)">完成部署</button>
     </div>
 
-	<div id="stage4" class="scene">
-		<h1 style="color: var(--accent);">SUCCESS!</h1>
-		<hr>
-
-		<div class="photo-card">
-			<img src="IMG.jpg" alt="Our Little One">
-		</div>
-
-		<p class="announcement-text">我們懷孕了！👶</p>
-
-		<div class="final-stats">
-			> 預計上線日期：2026 年 11 月<br>
-			> 冒險人數：2人 ➜ 3人<br>
-			> 備註：家銘和茜茹小隊的新隊員！
-		</div>
-
-		<br>
-		<button onclick="location.reload()">重新檢測系統</button>
-	</div>
+    <div id="stage5" class="scene">
+        <h1 style="color: var(--accent);">SUCCESS!</h1>
+        <hr>
+        <div class="photo-card">
+            <img src="IMG.jpg" alt="Our Little One">
+        </div>
+        <p class="announcement-text">我們懷孕了！👶</p>
+        <div class="final-stats">
+            > 預計上線日期：2026 年 11 月<br>
+            > 冒險人數：2人 ➜ 3人<br>
+            > 備註：家銘和茜茹小隊的新隊員！
+        </div>
+        <br>
+        <button onclick="location.reload()">重新檢測系統</button>
+    </div>
 </div>
 
 <script>
@@ -195,17 +217,15 @@
         document.getElementById('stage' + n).classList.add('active');
     }
 
-    // 第一關：檢查英文
     function checkStage1() {
         const val = document.getElementById('cmdInput').value.trim();
-        if(val.toLowerCase() === "ming & lulu") {
+        if(val.toLowerCase() === "persea") {
             nextStage(2);
         } else {
             alert("指令錯誤，請參考提示輸入。");
         }
     }
 
-    // 第二關：檢查數字
     function checkStage2() {
         const val = document.getElementById('logicInput').value;
         if(val === "2026") {
@@ -215,7 +235,26 @@
         }
     }
 
-    // 第三關：滑動加載 (全齡友善)
+    // 新增：組件選取邏輯
+    let selectedCount = 0;
+    function toggleComp(el) {
+        if (!el.classList.contains('selected')) {
+            el.classList.add('selected');
+            selectedCount++;
+        } else {
+            el.classList.remove('selected');
+            selectedCount--;
+        }
+
+        if (selectedCount >= 3) {
+            document.getElementById('next3Btn').disabled = false;
+            document.getElementById('comp-msg').innerText = "組件配對完成！";
+        } else {
+            document.getElementById('next3Btn').disabled = true;
+            document.getElementById('comp-msg').innerText = "還需要 " + (3 - selectedCount) + " 個組件...";
+        }
+    }
+
     const statusMessages = {
         10: "正在尋找新成員...",
         30: "正在注入魔法能量...",
@@ -227,15 +266,11 @@
 
     function updateLoading(val) {
         document.getElementById('loading-text').innerText = "進度：" + val + "%";
-        
-        // 根據進度更新文字
         for (let percent in statusMessages) {
             if (val >= parseInt(percent)) {
                 document.getElementById('status-msg').innerText = statusMessages[percent];
             }
         }
-
-        // 完成後顯示按鈕
         if(val == 100) {
             document.getElementById('finalBtn').style.display = 'inline-block';
         }
