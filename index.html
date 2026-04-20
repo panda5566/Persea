@@ -100,6 +100,39 @@
             line-height: 1.6;
             border-left: 4px solid var(--accent);
         }
+
+		/* 照片容器樣式：模擬拍立得質感 */
+		.photo-card {
+			background: white;
+			padding: 15px 15px 40px 15px; /* 下方留白較多，像拍立得 */
+			border: 1px solid #ddd;
+			box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+			margin: 20px auto;
+			max-width: 280px; /* 限制照片大小，適合手機觀看 */
+			transform: rotate(-3deg); /* 微微傾斜更自然 */
+			transition: transform 0.5s ease;
+		}
+
+		/* 當滑鼠移上去或手機點擊時會擺正，增加互動感 */
+		.photo-card:hover {
+			transform: rotate(0deg);
+		}
+
+		.photo-card img {
+			width: 100%;
+			height: auto;
+			display: block;
+			filter: sepia(20%); /* 稍微加一點復古濾鏡，配合超音波顏色 */
+		}
+
+		/* 這是你原本那行文字的升級版樣式 */
+		.announcement-text {
+			font-weight: bold;
+			font-size: 1.5rem; /* 字體放大一點 */
+			color: #D35400;   /* 溫暖的深橘色 */
+			margin-top: 25px;
+			letter-spacing: 2px;
+		}
     </style>
 </head>
 <body>
@@ -117,7 +150,7 @@
 
     <div id="stage2" class="scene">
         <h2>身分校準</h2>
-        <p>請輸入預計達成連結之年份：</p>
+        <p>請輸入當前企劃實施年份：</p>
         <div class="input-group">
             <input type="number" id="logicInput" placeholder="2026">
         </div>
@@ -135,19 +168,25 @@
         <button id="finalBtn" style="display:none;" onclick="nextStage(4)">完成部署</button>
     </div>
 
-    <div id="stage4" class="scene">
-        <h1 style="color: var(--accent);">SUCCESS!</h1>
-        <hr>
-        <p style="font-weight: bold; font-size: 1.2rem;">我們懷孕了！👶</p>
-        <div class="final-stats">
-            > 預計上線日期：2026 年 11 月<br>
-            > 冒險人數：2人 ➜ 3人<br>
-            > 屬性：硬核魔法、法式甜點級甜蜜<br>
-            > 備註：新的隊員即將加入！
-        </div>
-        <br>
-        <button onclick="location.reload()">重新檢測系統</button>
-    </div>
+	<div id="stage4" class="scene">
+		<h1 style="color: var(--accent);">SUCCESS!</h1>
+		<hr>
+
+		<div class="photo-card">
+			<img src="IMG.jpg" alt="Our Little One">
+		</div>
+
+		<p class="announcement-text">我們懷孕了！👶</p>
+
+		<div class="final-stats">
+			> 預計上線日期：2026 年 11 月 1 日<br>
+			> 冒險人數：2人 ➜ 3人<br>
+			> 備註：家銘和茜茹小隊的新隊員！
+		</div>
+
+		<br>
+		<button onclick="location.reload()">重新檢測系統</button>
+	</div>
 </div>
 
 <script>
@@ -159,7 +198,7 @@
     // 第一關：檢查英文
     function checkStage1() {
         const val = document.getElementById('cmdInput').value.trim();
-        if(val.toLowerCase() === "Ming & Lulu") {
+        if(val.toLowerCase() === "ming & lulu") {
             nextStage(2);
         } else {
             alert("指令錯誤，請參考提示輸入。");
