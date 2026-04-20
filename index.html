@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【極密】專案：小小冒險家</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F8F5F0; /* 米色 */
+            --primary-navy: #2C3E50; /* 深藍 */
+            --accent-wood: #D2B48C; /* 松木色 */
+            --active-gold: #D4AF37; /* 焦糖金 */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Noto Serif TC', serif;
+            color: var(--primary-navy);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            padding: 40px;
+            background: #fff;
+            box-shadow: 10px 10px 0px var(--primary-navy);
+            border: 2px solid var(--primary-navy);
+            position: relative;
+        }
+
+        .scene { display: none; transition: all 0.5s ease; }
+        .scene.active { display: block; animation: fadeIn 0.8s forwards; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 物件收集樣式 */
+        .inventory {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .item {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #eee;
+            transition: transform 0.2s;
+        }
+        .item.collected {
+            background-color: var(--accent-wood);
+            border-color: var(--primary-navy);
+            transform: scale(0.9);
+            filter: grayscale(100%);
+            pointer-events: none;
+        }
+
+        /* 攪拌動畫 */
+        .pot {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 5px solid var(--primary-navy);
+            margin: 20px auto;
+            background: #fff;
+            transition: background-color 2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .pot.heating { background-color: var(--active-gold); }
+
+        /* 按鈕樣式 */
+        button {
+            background: var(--primary-navy);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-family: 'Space Mono', monospace;
+            cursor: pointer;
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+        button:disabled { background: #ccc; }
+
+        h1 { font-size: 1.5rem; letter-spacing: 4px; border-bottom: 2px solid var(--primary-navy); padding-bottom: 10px; }
+        .stats { text-align: left; background: #f9f9f9; padding: 15px; font-family: 'Space Mono', monospace; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="scene1" class="scene active">
+            <p style="font-family: 'Space Mono';">CONFIDENTIAL DOCUMENT</p>
+            <h1>探險準備清單</h1>
+            <p>在開始新的航程前，請確保裝備已齊全：</p>
+            <div class="inventory">
+                <div class="item" onclick="collect(this, 'backpack')">🎒</div>
+                <div class="item" onclick="collect(this, 'map')">🗺️</div>
+                <div class="item" onclick="collect(this, 'whisk')">🥣</div>
+            </div>
+            <p id="inv-msg">點擊收集必要物資...</p>
+            <button id="next1" disabled onclick="nextScene(2)">前往營地</button>
+        </div>
+
+        <div id="scene2" class="scene">
+            <h1>魔力反應爐</h1>
+            <p>這是一個複雜的「硬核魔法」過程。<br>請連續點擊圓心進行攪拌，直到香氣散發。</p>
+            <div id="pot" class="pot" onclick="stir()">🌀</div>
+            <div id="progress-bar" style="width: 100%; height: 5px; background: #eee; margin-top: 10px;">
+                <div id="progress" style="width: 0%; height: 100%; background: var(--active-gold); transition: 0.3s;"></div>
+            </div>
+            <button id="next2" style="display:none;" onclick="nextScene(3)">查看結果</button>
+        </div>
+
+        <div id="scene3" class="scene">
+            <h1 style="border-color: var(--active-gold);">NEW PLAYER JOINED!</h1>
+            <div style="font-size: 4rem; margin: 20px;">🌱</div>
+            <div class="stats">
+                > 專案代號：小小冒險家<br>
+                > 職業屬性：法式甜點師 / 繪本愛好者<br>
+                > 預計上線：2026 年 11 月<br>
+                > 目前狀態：正在加載細胞與魔法...
+            </div>
+            <p>我們懷孕了！準備好迎接新的冒險了嗎？</p>
+            <button onclick="location.reload()">重新解密</button>
+        </div>
+    </div>
+
+    <script>
+        let collectedItems = 0;
+        let stirCount = 0;
+
+        function collect(el, name) {
+            if (!el.classList.contains('collected')) {
+                el.classList.add('collected');
+                collectedItems++;
+                if (collectedItems === 3) {
+                    document.getElementById('inv-msg').innerText = "物資已齊全！可以出發。";
+                    document.getElementById('next1').disabled = false;
+                }
+            }
+        }
+
+        function nextScene(n) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById('scene' + n).classList.add('active');
+        }
+
+        function stir() {
+            stirCount += 10;
+            document.getElementById('progress').style.width = stirCount + '%';
+            
+            // 晃動效果
+            const pot = document.getElementById('pot');
+            pot.style.transform = `rotate(${stirCount * 5}deg)`;
+
+            if (stirCount >= 100) {
+                pot.classList.add('heating');
+                pot.innerText = "✨";
+                document.getElementById('next2').style.display = 'inline-block';
+            }
+        }
+    </script>
+</body>
+</html>
