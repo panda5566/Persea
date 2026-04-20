@@ -6,16 +6,15 @@
     <title>TERMINAL: PROJECT M-2026</title>
     <style>
         :root {
-            --bg: #1a1a1a;
-            --text: #e0e0e0;
-            --accent: #c5a059; /* 焦糖金色 */
-            --terminal-green: #4af626;
+            --bg: #F4F1EA; /* 經典米色背景 */
+            --navy: #2C3E50; /* 深藍色 */
+            --accent: #C5A059; /* 焦糖金 */
         }
 
         body {
             background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Courier New', Courier, monospace;
+            color: var(--navy);
+            font-family: 'Courier New', 'Microsoft JhengHei', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,184 +25,181 @@
 
         .system-box {
             width: 100%;
-            max-width: 500px;
-            border: 1px solid #444;
-            padding: 20px;
-            background: #222;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            max-width: 450px;
+            border: 2px solid var(--navy);
+            padding: 30px;
+            background: #fff;
+            box-shadow: 10px 10px 0px var(--navy);
+            text-align: center;
         }
 
         .scene { display: none; }
-        .scene.active { display: block; }
+        .scene.active { display: block; animation: fadeIn 0.6s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 終端機樣式 */
-        .terminal-output {
-            height: 200px;
-            overflow-y: auto;
-            background: #000;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-            color: var(--terminal-green);
-            text-align: left;
-        }
-
-        input[type="text"], input[type="number"] {
-            background: #000;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 10px;
-            width: 80%;
-            outline: none;
-        }
-
-        /* 溫控小遊戲 */
-        .gauge-container {
-            width: 100%;
-            height: 30px;
-            background: #444;
-            margin: 20px 0;
-            position: relative;
-        }
-        #cursor {
-            width: 5px;
-            height: 40px;
-            background: white;
-            position: absolute;
-            top: -5px;
-            left: 0%;
-            transition: left 0.1s;
-        }
-        .target-zone {
-            width: 15%;
-            height: 100%;
-            background: var(--accent);
-            position: absolute;
-            left: 75%; /* 目標區域在 75% */
+        /* 輸入框與按鈕 */
+        .input-group { margin: 20px 0; }
+        input {
+            background: #f9f9f9;
+            border: 1px solid var(--navy);
+            padding: 12px;
+            width: 85%;
+            font-size: 1rem;
+            text-align: center;
+            color: var(--navy);
         }
 
         button {
-            background: var(--accent);
-            color: #000;
+            background: var(--navy);
+            color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* 第三關：大型進度滑桿 */
+        .slider-container {
+            margin: 40px 0;
+            position: relative;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: #eee;
+            height: 15px;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border: 3px solid var(--navy);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #loading-text {
+            font-weight: bold;
+            color: var(--accent);
+            height: 24px;
             margin-top: 15px;
         }
 
-        button:hover { filter: brightness(1.2); }
-
-        .glitch { animation: flash 0.2s infinite; }
-        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+        .final-stats {
+            text-align: left;
+            background: #f4f4f4;
+            padding: 15px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border-left: 4px solid var(--accent);
+        }
     </style>
 </head>
 <body>
 
 <div class="system-box">
     <div id="stage1" class="scene active">
-        <div class="terminal-output" id="output1">
-            [SYS] 正在啟動核心...<br>
-            [SYS] 檢查硬體狀態：IKEA_IVAR_UNIT... OK<br>
-            [SYS] 載入魔法系統：SAND_V1.2... OK<br>
-            [SYS] 警告：需要權限指令以解鎖封存檔案。
+        <p style="font-size: 0.8rem; opacity: 0.7;">> SYSTEM ID: ADMIN_TAIWAN</p>
+        <h2>指令驗證</h2>
+        <p>請輸入專案啟動碼：Ming & Lulu</p>
+        <div class="input-group">
+            <input type="text" id="cmdInput" placeholder="Ming & Lulu">
         </div>
-        <p>請輸入初始化指令：</p>
-        <input type="text" id="cmdInput" placeholder="提示：start --project-m">
-        <br>
         <button onclick="checkStage1()">執行指令</button>
     </div>
 
     <div id="stage2" class="scene">
-        <h3>連結驗證 (Connection Logic)</h3>
-        <p style="font-size: 0.9rem; color: #aaa;">
-            「如果要創造生命，必須在三種元素間建立穩定的連結。」
-        </p>
-        <div style="text-align: left; padding: 10px; border-left: 3px solid var(--accent);">
-            1. 第一個數字是「雙方的總和」 (1+1=?) <br>
-            2. 第二個數字是「預產期的月份」 <br>
-            3. 第三個數字是「新成員的數量」 (1)
+        <h2>身分校準</h2>
+        <p>請輸入預計達成連結之年份：</p>
+        <div class="input-group">
+            <input type="number" id="logicInput" placeholder="2026">
         </div>
-        <p>請輸入三位數代碼：</p>
-        <input type="number" id="logicInput" placeholder="???">
-        <br>
-        <button onclick="checkStage2()">驗證連結</button>
+        <button onclick="checkStage2()">驗證年份</button>
     </div>
 
     <div id="stage3" class="scene">
-        <h3>精準度測試：Beurre Noisette</h3>
-        <p>焦糖化的瞬間稍縱即逝。<br>當白色游標進入「金色區域」時點擊按鈕鎖定！</p>
-        <div class="gauge-container">
-            <div class="target-zone"></div>
-            <div id="cursor"></div>
+        <h2>專案加載中...</h2>
+        <p>請將滑桿拉至 100% 以部署專案</p>
+        <div class="slider-container">
+            <input type="range" id="loadSlider" min="0" max="100" value="0" oninput="updateLoading(this.value)">
+            <div id="loading-text">進度：0%</div>
         </div>
-        <button onclick="checkStage3()">鎖定溫度！</button>
+        <div id="status-msg" style="font-size: 0.85rem; color: #666;">系統就緒中...</div>
+        <button id="finalBtn" style="display:none;" onclick="nextStage(4)">完成部署</button>
     </div>
 
     <div id="stage4" class="scene">
-        <h1 class="glitch" style="color: var(--accent);">解密成功</h1>
+        <h1 style="color: var(--accent);">SUCCESS!</h1>
         <hr>
-        <div style="text-align: left; font-size: 0.9rem;">
-            <p>> 偵測到新的生物特徵...</p>
-            <p>> 預計於 2026 年第 4 季度完成載入</p>
-            <p>> 屬性：超強生命力、隨機哭聲爆發</p>
+        <p style="font-weight: bold; font-size: 1.2rem;">我們懷孕了！👶</p>
+        <div class="final-stats">
+            > 預計上線日期：2026 年 11 月<br>
+            > 冒險人數：2人 ➜ 3人<br>
+            > 屬性：硬核魔法、法式甜點級甜蜜<br>
+            > 備註：新的隊員即將加入！
         </div>
-        <h2 style="margin-top: 30px;">我們懷孕了！👶</h2>
-        <p>新的冒險者即將加入我們的隊伍。</p>
+        <br>
         <button onclick="location.reload()">重新檢測系統</button>
     </div>
 </div>
 
 <script>
-    // Stage 1 邏輯
-    function checkStage1() {
-        const input = document.getElementById('cmdInput').value.trim();
-        if(input === "start --project-m") {
-            nextStage(2);
-        } else {
-            alert("指令無效。提示：注意空格與符號。");
-        }
-    }
-
-    // Stage 2 邏輯 (假設月份是 11 月)
-    function checkStage2() {
-        const input = document.getElementById('logicInput').value;
-        if(input === "2111") { // 1+1=2, 月份=11, 數量=1
-            nextStage(3);
-            startGauge();
-        } else {
-            alert("邏輯校準失敗，請重新計算連結。");
-        }
-    }
-
-    // Stage 3 邏輯
-    let cursorPos = 0;
-    let direction = 1;
-    let gaugeInterval;
-
-    function startGauge() {
-        gaugeInterval = setInterval(() => {
-            cursorPos += (2 * direction);
-            if(cursorPos >= 100 || cursorPos <= 0) direction *= -1;
-            document.getElementById('cursor').style.left = cursorPos + '%';
-        }, 20);
-    }
-
-    function checkStage3() {
-        clearInterval(gaugeInterval);
-        // 目標區域在 75%-90% 之間
-        if(cursorPos >= 75 && cursorPos <= 90) {
-            nextStage(4);
-        } else {
-            alert("溫度過高或不足！奶油毀了。再試一次！");
-            cursorPos = 0;
-            startGauge();
-        }
-    }
-
     function nextStage(n) {
         document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
         document.getElementById('stage' + n).classList.add('active');
+    }
+
+    // 第一關：檢查英文
+    function checkStage1() {
+        const val = document.getElementById('cmdInput').value.trim();
+        if(val.toLowerCase() === "Ming & Lulu") {
+            nextStage(2);
+        } else {
+            alert("指令錯誤，請參考提示輸入。");
+        }
+    }
+
+    // 第二關：檢查數字
+    function checkStage2() {
+        const val = document.getElementById('logicInput').value;
+        if(val === "2026") {
+            nextStage(3);
+        } else {
+            alert("年份校準失敗，請輸入正確年份。");
+        }
+    }
+
+    // 第三關：滑動加載 (全齡友善)
+    const statusMessages = {
+        10: "正在尋找新成員...",
+        30: "正在注入魔法能量...",
+        50: "正在烘烤焦糖奶油...",
+        70: "正在組裝 IVAR 木架...",
+        90: "準備揭曉驚喜...",
+        100: "專案部署完成！"
+    };
+
+    function updateLoading(val) {
+        document.getElementById('loading-text').innerText = "進度：" + val + "%";
+        
+        // 根據進度更新文字
+        for (let percent in statusMessages) {
+            if (val >= parseInt(percent)) {
+                document.getElementById('status-msg').innerText = statusMessages[percent];
+            }
+        }
+
+        // 完成後顯示按鈕
+        if(val == 100) {
+            document.getElementById('finalBtn').style.display = 'inline-block';
+        }
     }
 </script>
 
